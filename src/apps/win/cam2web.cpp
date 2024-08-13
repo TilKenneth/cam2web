@@ -101,7 +101,7 @@ using namespace std::chrono;
 
 // Information provided on version request
 #define STR_INFO_PRODUCT        "cam2web"
-#define STR_INFO_VERSION        "1.2.0"
+#define STR_INFO_VERSION        "1.2.0.1f"
 #define STR_INFO_PLATFORM       "Windows"
 
 // Default names of some configuration files/folders
