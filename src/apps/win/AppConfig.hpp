@@ -43,11 +43,11 @@ public:
     void SetHttpPort( uint16_t port );
 
     // Get/Set viewers group ID
-    uint16_t ViewersGroup( );
+    uint16_t ViewersGroup( ) const;
     void SetViewersGroup( uint16_t groupId );
 
     // Get/Set configurators group ID
-    uint16_t ConfiguratorsGroup( );
+    uint16_t ConfiguratorsGroup( ) const;
     void SetConfiguratorsGroup( uint16_t groupId );
 
     // Get/Set HTTP digest auth domain

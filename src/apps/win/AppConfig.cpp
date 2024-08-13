@@ -145,7 +145,7 @@ void AppConfig::SetHttpPort( uint16_t port )
 }
 
 // Get/Set viewers group ID
-uint16_t AppConfig::ViewersGroup( )
+uint16_t AppConfig::ViewersGroup( ) const
 {
     return viewersGroup;
 }
@@ -155,7 +155,7 @@ void AppConfig::SetViewersGroup( uint16_t groupId )
 }
 
 // Get/Set configurators group ID
-uint16_t AppConfig::ConfiguratorsGroup( )
+uint16_t AppConfig::ConfiguratorsGroup( ) const
 {
     return configuratorsGroup;
 }
@@ -588,7 +588,7 @@ map<string, string> AppConfig::GetAllProperties( ) const
     map<string, string> properties;
     string              value;
 
-    for ( auto property : SupportedProperties )
+    for ( const auto& property : SupportedProperties )
     {
         if ( GetProperty( property.first, value ) )
         {
