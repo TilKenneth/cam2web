@@ -69,8 +69,8 @@ void ResizeWindowToClientSize( HWND hWnd, LONG width, LONG height )
 // Make sure the specified window is within desktop area
 void EnsureWindowVisible( HWND hWnd )
 {
-    RECT workAreaRect, wndRect;
-    LONG newX, newY, wndWidth, wndHeight;
+    RECT workAreaRect = {}, wndRect = {};
+    LONG newX(LONG_MAX), newY(LONG_MAX), wndWidth(LONG_MAX), wndHeight(LONG_MAX);
 
     GetWindowRect( hWnd, &wndRect );
     SystemParametersInfo( SPI_GETWORKAREA, 0, &workAreaRect, 0 );
@@ -179,12 +179,12 @@ void SetMenuItemIcon( HMENU hMenu, UINT menuCommand, UINT idIcon )
 
     if ( hIcon )
     {
-        HDC     hDC     =  GetDC( NULL );
+        HDC     hDC     = GetDC( NULL );
         HDC     hMemDC  = CreateCompatibleDC( hDC );
         HBITMAP hMemBmp = CreateCompatibleBitmap( hDC, 16, 16 );
         HGDIOBJ hOrgBmp = SelectObject( hMemDC, hMemBmp );
         HBRUSH  hBrush  = CreateSolidBrush( GetSysColor( COLOR_MENU ) );
-        RECT    rc;
+        RECT    rc      = {};
 
         rc.top    = rc.left  = 0;
         rc.bottom = rc.right = 16;
@@ -206,32 +206,35 @@ void SetMenuItemIcon( HMENU hMenu, UINT menuCommand, UINT idIcon )
 }
 
 // Get window's text as UTF8 string
-string GetWindowString( HWND hwnd, bool trimIt )
+string GetWindowString(HWND hwnd, bool trimIt)
 {
-    string strText;
-    int    textLength = GetWindowTextLength( hwnd );
-    WCHAR* text       = new WCHAR[textLength + 1];
-    WCHAR* ptr        = text;
-
-    GetWindowText( hwnd, text, textLength + 1 );
-
-    if ( trimIt )
+    string strText(__FUNCSIG__);
+    int    textLength = GetWindowTextLength(hwnd);
+    if (textLength > 0)
     {
-        while ( ( textLength > 0 ) && ( iswspace( ptr[textLength - 1] ) ) )
+        WCHAR* text = new WCHAR[textLength + 1];
+        WCHAR* ptr = text;
+
+        if (0 < GetWindowText(hwnd, text, textLength + 1))
         {
-            ptr[textLength - 1] = L'\0';
-            textLength--;
+            if (trimIt)
+            {
+                while ((textLength > 0) && (iswspace(ptr[textLength - 1])))
+                {
+                    ptr[textLength - 1] = L'\0';
+                    textLength--;
+                }
+
+                while ((textLength > 0) && (iswspace(ptr[0])))
+                {
+                    ptr++;
+                }
+            }
+
+            strText = Utf16to8(ptr);
         }
 
-        while ( ( textLength > 0 ) && ( iswspace( ptr[0] ) ) )
-        {
-            ptr++;
-        }
+        delete[] text;
     }
-
-    strText = Utf16to8( ptr );
-
-    delete [] text;
-
     return strText;
 }
