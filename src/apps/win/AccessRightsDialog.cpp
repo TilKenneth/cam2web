@@ -81,7 +81,7 @@ static void InitComboBoxes( HWND hwndViewersBox, HWND hwndConfiguratorsBox, User
 static void InitUsersListView( HWND hwndListView )
 {
     // add columns to the list view
-    LVCOLUMN    lvc;
+    LVCOLUMN    lvc = {};
 
     lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
     lvc.fmt  = LVCFMT_LEFT;
@@ -121,7 +121,7 @@ static void InitUsersListView( HWND hwndListView )
 static void AddUserToListView( HWND hwndListView, const string& userName, UserGroup userGroup, bool selectIt = true )
 {
     wstring userNameUnicode = Utf8to16( userName );
-    LVITEM  lvI;
+    LVITEM  lvI = {};
 
     lvI.pszText   = (WCHAR*) userNameUnicode.c_str( );
     lvI.mask      = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;
@@ -159,7 +159,7 @@ static void UpdateUserInListView( HWND hwndListView, const string& userName, Use
 
         if ( userNameUnicode == buffer )
         {
-            LVITEM  lvI;
+            LVITEM  lvI = {};
 
             lvI.mask     = LVIF_IMAGE;
             lvI.iItem    = i;
@@ -225,9 +225,9 @@ static void SaveUsersList( const string& fileName, const UsersMap& users )
 
     if ( file != nullptr )
     {
-        for ( auto kvp : users )
+        for ( const auto& kvp : users )
         {
-            CameraUser user = kvp.second;
+            const CameraUser& user = kvp.second;
 
             fprintf( file, "%s:%s:%s:%d\n", user.Name.c_str( ), user.Domain.c_str( ), user.DigestHa1.c_str( ), user.Group );
         }
