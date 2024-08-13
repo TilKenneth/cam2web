@@ -91,7 +91,7 @@ string GetMd5Hash( const uint8_t* buffer, int bufferLength )
             if ( CryptHashData( hHash, buffer, bufferLength, 0 ) )
             {
                 DWORD dataLength;
-                DWORD hashSize;
+                DWORD hashSize(0);
 
                 dataLength = sizeof( hashSize );
                 if ( CryptGetHashParam( hHash, HP_HASHSIZE, (BYTE*) &hashSize, &dataLength, 0 ) )
