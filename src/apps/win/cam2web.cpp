@@ -211,6 +211,8 @@ public:
         hInst( NULL ), hwndMain( NULL ), hwndCamerasCombo( NULL ),
         autoStartStreaming( false ), minimizeWindowOnStart( false ), showNoUI( false ), adminPort( 0 ),
         hwndResolutionsCombo( NULL ), hwndStartButton( NULL ), hwndStatusLink( NULL ), hwndStatusBar( NULL ),
+        hwndFrameRateEdit(nullptr), hwndFrameRateSpin(nullptr), szTitle(TEXT("")), szWindowClass(TEXT("")),
+        lastFramesGot(0), nextFpsIndex(0),
         hiconAppIcon( NULL ), hiconAppActiveIcon( NULL ), hiconTrayIcon( NULL ), hiconTrayActiveIcon( NULL ),
         devices( ), cameraCapabilities( ), camera( ), selectedDeviceName( ), selectedResolutuion( ),
         cameraConfig( ), appConfig( new AppConfig( ) ), server( ), adminServer( ), video2web( ),
@@ -369,7 +371,7 @@ static bool ParseCommandLine( int argc, WCHAR* argv[], AppData* appData )
 // Register class of the main window
 static ATOM MyRegisterClass( HINSTANCE hInstance )
 {
-    WNDCLASSEX wcex;
+    WNDCLASSEX wcex{};
     uint16_t   iconIndex = ( gData->appConfig == nullptr ) ? 0 : gData->appConfig->WindowIconIndex( );
 
     if ( iconIndex > sizeof( AppIconIds ) / sizeof( AppIconIds[0] ) )
@@ -676,7 +678,7 @@ static void CreateDeviceAndGetResolutions( )
 
             gData->cameraCapabilities = gData->camera->GetCapabilities( );
 
-            for ( auto cap : gData->cameraCapabilities )
+            for ( const auto& cap : gData->cameraCapabilities )
             {
                 swprintf( strResolution, 255, TEXT( "%d x %d, %d bpp, %d fps" ), cap.Width( ), cap.Height( ), cap.BitCount( ), cap.AverageFrameRate( ) );
 
@@ -736,7 +738,7 @@ void GetVideoDevices( )
         TCHAR        deviceName[256];
         int          index = 0;
 
-        for ( auto device : gData->devices )
+        for ( const auto& device : gData->devices )
         {
             _tcsncpy( deviceName, Utf8to16( device.Name( ) ).c_str( ), 255 );
 
@@ -1197,7 +1199,7 @@ LRESULT CALLBACK MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
             }
             else
             {
-                int minFps, maxFps;
+                int minFps = 0, maxFps = 0;
 
                 SendMessage( gData->hwndFrameRateSpin, UDM_GETRANGE32, (WPARAM) &minFps, (LPARAM) &maxFps );
 
