@@ -1,0 +1,7 @@
+.vs
+bin
+obj
+*-transcript.txt
+*.xml
+*settings.json
+*.code-workspace
